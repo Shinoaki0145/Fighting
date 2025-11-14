@@ -42,8 +42,7 @@ conda install -c conda-forge arxiv requests psutil memory_profiler
 After running the notebook, you'll have the following files:
 
 ```
-.
-└── 23127238/  
+23127238/  
     ├── src
     |    ├── 23127238.ipynb 
     |    └── requirements.txt  
