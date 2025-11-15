@@ -136,7 +136,7 @@ Note: Rerunning the notebook will overwrite these files (because `%%writefile` r
 use 
   - With API key: Higher limits (varies by tier)
   - You can sign up for a free API key at https://www.semanticscholar.org/product/api
-  - My personal API key:
+  - My personal API key which we obtained from Semantic Scholar at 2:11 PM on November 14, 2025.
     - *cf6G5yldwF4UEzswq3WKX72B6uffqNv17LQDo8Oi*
     - *a8okwqTLp18Ku1vBXJ1Jb6eRoDKpmAem41VjtFCY*
 - The code automatically handles rate limit errors (HTTP 429) and retries with exponential backoff
