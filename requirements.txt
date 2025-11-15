@@ -1,0 +1,7 @@
+# Requirements for arXiv Paper Crawler and Reference Extractor
+# Install with: pip install -r requirements.txt
+
+arxiv>=2.1.0
+requests>=2.31.0
+psutil>=5.9.0
+memory_profiler>=0.61.0
