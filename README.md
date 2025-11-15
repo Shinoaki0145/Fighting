@@ -37,6 +37,12 @@ Or using conda:
 conda install -c conda-forge arxiv requests psutil memory_profiler
 ```
 
+Or run cell install in the Jupyter notebook:
+```bash
+
+!pip install arxiv requests psutil memory_profiler
+```
+
 ## Project Structure
 
 After running the notebook, you'll have the following files:
@@ -129,6 +135,10 @@ Note: Rerunning the notebook will overwrite these files (because `%%writefile` r
   - Without API key: The API enforces limits of 1 request per second and 100 requests per 5-minute window for unauthenticated
 use 
   - With API key: Higher limits (varies by tier)
+  - You can sign up for a free API key at https://www.semanticscholar.org/product/api
+  - My personal API key:
+    - *cf6G5yldwF4UEzswq3WKX72B6uffqNv17LQDo8Oi*
+    - *a8okwqTLp18Ku1vBXJ1Jb6eRoDKpmAem41VjtFCY*
 - The code automatically handles rate limit errors (HTTP 429) and retries with exponential backoff
 
 ### Adjusting Scraping Rate
@@ -258,19 +268,19 @@ The script provides real-time progress updates:
 
 ### Measured Performance Metrics
 
-Based on actual test runs on **Google Colab** with default configuration (2 parallel threads) for processing papers **2305.8001 to 2305.9000**:
+Based on actual test runs on **Google Colab** with default configuration (2 parallel threads) for processing papers **2305.8001 to 2305.9500**:
 
-- **Number of papers processed**: 1000
-- **Total Time**: ~2.388 hours
-- **Average processing time**: ~8.6 seconds per paper
+- **Number of papers processed**: 1500
+- **Total Time**: 4 hours 19 seconds
+- **Average processing time**: ~9.61 seconds per paper
 - **Success rate**: 100% (both phases combined)
 - **Reference extraction failure rate**: 0%
-- **No reference**: 21
-- **Peak RAM usage through *memory_profiler***: 129.84 MiB
-- **Peak RAM usage through *psutil***: ~7662.8.84 MB
-- **Average RAM usage through *psutil***: ~224.84 MB
-- **Peak disk usager**: ~1917.65 MB
-- **Disk usage**: 1911.37 MB ~ 1.9GB
+- **No reference**: 39
+- **Peak RAM usage through *memory_profiler***: 123.84 MiB
+- **Peak RAM usage through *psutil***: 8158.54 MB
+- **Average RAM usage through *psutil***: ~207.05 MB
+- **Peak disk usager**: 2494.05 MB
+- **Disk usage**: 2422.14 MB ~ 2.4 GB
 - **Disk usage per paper**: ~1.5-2.4 MB (after cleanup)
 
 > **Note**: These metrics were measured on Google Colab's free tier. Performance may vary on different platforms or configurations.
