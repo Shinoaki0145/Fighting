@@ -104,6 +104,16 @@ SAVE_DIR = "./23127238"      # Output directory
 
 Run all cells in the notebook sequentially, or run individual cells as needed. The notebook contains all the necessary code for crawling arXiv papers and extracting references.
 
+#### Generated Python scripts
+
+Running the notebook also writes three helper Python scripts into the current working directory (these are created by notebook cells using `%%writefile`):
+
+- `arxiv_crawler.py`: Downloads paper sources (all versions), extracts archives, and cleans extracted files (keeps `.tex` and `.bib`).
+- `reference_extractor.py`: Queries Semantic Scholar for references and converts/saves them into `references.json` for each paper.
+- `main.py`: Orchestrates parallel processing, monitoring, and reporting; it imports and uses the two modules above and can be run standalone (`python main.py`).
+
+Note: Rerunning the notebook will overwrite these files (because `%%writefile` replaces the target file). They are provided so you can run or modify the pipeline outside the notebook if desired.
+
 ## Scraping Rate and Rate Limiting
 
 ### arXiv Rate Limiting
