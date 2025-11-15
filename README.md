@@ -42,24 +42,32 @@ conda install -c conda-forge arxiv requests psutil memory_profiler
 After running the notebook, you'll have the following files:
 
 ```
-23127238/  
-    ├── src
-    |    ├── 23127238.ipynb 
-    |    └── requirements.txt  
-    ├── YYMM-NNNNN/     # Paper folders
-    |    ├── metadata.json
-    |    ├── references.json
-    |    └── tex/
-    |        └── YYMM-NNNNNvN/  # Version folders with .tex and .bib files
-    ├── README.md
-    └── Report.tex
+23127238/
+  ├── src/
+  │    ├── 23127238.ipynb
+  │    └── requirements.txt
+  ├── 23127238/        # Nested output root (contains paper folders)
+  │    ├── YYMM-NNNNN/     # Paper folders (format: YYMM-NNNNN)
+  │    │    ├── metadata.json
+  │    │    ├── references.json
+  │    │    └── tex/
+  │    │        └── YYMM-NNNNNvN/   # Version folder (eg 2304-14607v1)
+  │    │            ├── *.tex
+  │    │            ├── *.bib
+  │    │            └── <subfolders>/
+  │    │                ├── *.tex
+  │    │                ├── *.bib
+  │    │                └── ... (recursively)
+  │    └── ... (other output folders for each paper)
+  ├── README.md
+  └── Report.tex
 ```
 
 ## Running the Code
 
 ### Step 1: Open the Notebook
 
-Open the Jupyter notebook (`23127238.ipynb`) in Jupyter Lab, Jupyter Notebook, or VS Code.
+Open the Jupyter notebook (`23127238.ipynb`) in Google Colab, Kaggle, Jupyter Lab, Jupyter Notebook, or VS Code.
 
 ### Step 2: Configure Parameters
 
@@ -71,7 +79,7 @@ START_MONTH = "2023-04"      # Start month in format "YYYY-MM"
 START_ID = 14607             # Starting arXiv ID number
 END_MONTH = "2023-05"        # End month in format "YYYY-MM"
 END_ID = 14596               # Ending arXiv ID number
-MAX_PARALLELS = 3            # Number of parallel threads
+MAX_PARALLELS = 2            # Number of parallel threads
 SAVE_DIR = "./23127238"      # Output directory
 ```
 
@@ -85,8 +93,8 @@ SAVE_DIR = "./23127238"      # Output directory
   - Example: `14607` corresponds to `2305.14607` (if month is April 2023)
   - The system will automatically find the last valid ID in the start month if processing multiple months
 
-- **MAX_PARALLELS**: Number of parallel threads (default: 3)
-  - **Recommended values**: 2-5 threads
+- **MAX_PARALLELS**: Number of parallel threads (default: 2)
+  - **Recommended values**: 2-3 threads
   - Higher values = faster processing but more resource usage
   - Consider your network bandwidth and system resources
 
@@ -108,7 +116,8 @@ Run all cells in the notebook sequentially, or run individual cells as needed. T
 
 - **Retry delay**: 3 seconds (configurable in the notebook)
 - **Rate limits**: 
-  - Without API key: ~100 requests per 5 minutes
+  - Without API key: The API enforces limits of 1 request per second and 100 requests per 5-minute window for unauthenticated
+use 
   - With API key: Higher limits (varies by tier)
 - The code automatically handles rate limit errors (HTTP 429) and retries with exponential backoff
 
@@ -130,17 +139,17 @@ def get_paper_references(arxiv_id, delay=3):  # Change default delay
 
 ### Choosing the Right Parallelism Level
 
-- **Low (1-2 threads)**: 
+- **Low (1 thread)**: 
   - Suitable for slow networks
   - Lower resource usage
   - More reliable, less likely to hit rate limits
 
-- **Medium (3-5 threads)**:
+- **Medium (2-3 threads)**:
   - **Recommended for most use cases**
   - Good balance between speed and reliability
-  - Default: 3 threads
+  - Default: 2 threads
 
-- **High (6+ threads)**:
+- **High (4+ threads)**:
   - Faster processing but higher risk of rate limiting
   - Requires good network bandwidth
   - May need to increase delays between requests
@@ -149,20 +158,20 @@ def get_paper_references(arxiv_id, delay=3):  # Change default delay
 
 **Conservative (slow but safe):**
 ```python
-MAX_PARALLELS = 2
+MAX_PARALLELS = 1
 # In notebook: time.sleep(1.0) for arXiv downloads
 # In notebook: delay=5 for Semantic Scholar
 ```
 
 **Balanced (recommended):**
 ```python
-MAX_PARALLELS = 3
+MAX_PARALLELS = 2
 # Default delays (0.5s for arXiv, 3s for Semantic Scholar)
 ```
 
 **Aggressive (fast but risky):**
 ```python
-MAX_PARALLELS = 5
+MAX_PARALLELS = 4
 # In notebook: time.sleep(0.3) for arXiv downloads
 # In notebook: delay=2 for Semantic Scholar
 ```
@@ -172,17 +181,21 @@ MAX_PARALLELS = 5
 Each processed paper creates a folder structure:
 
 ```
-23127238/
-└── 2305-04793/              # Paper folder (format: YYMM-NNNNN)
-    ├── metadata.json        # Paper metadata
-    ├── references.json      # References (only arXiv papers)
-    └── tex/                 # LaTeX source files
-        ├── 2305-04793v1/    # Version 1
-        │   ├── main.tex
-        │   ├── references.bib
-        │   └── ...
-        └── 2305-04793v2/    # Version 2 (if exists)
+23127238/                 # Nested output root (contains paper folders)
+└── 2305-04793/           # Paper folder (format: YYMM-NNNNN)
+    ├── metadata.json     # Paper metadata
+    ├── references.json   # References (only arXiv papers)
+    └── tex/              # LaTeX source files
+        ├── 2305-04793v1/ # Version folder (eg. 2304-14607v1)
+        │   ├── *.tex
+        │   ├── *.bib
+        │   └── <subfolders>/
+        │       ├── *.tex
+        │       ├── *.bib
+        │       └── ... (recursively follows original TeX source structure)
+        └── 2305-04793v2/ # Version 2 (if exists)
             └── ...
+
 ```
 
 ### metadata.json Structure
@@ -215,8 +228,7 @@ Each processed paper creates a folder structure:
             "Vincent Bagayoko"
         ],
         "submission_date": "2024-02-24",
-        "semantic_scholar_id": "2d9e48266edf82c418850d3096e2db2059941625",
-        "year": 2024
+        "semantic_scholar_id": "2d9e48266edf82c418850d3096e2db2059941625"
     },
     ...
 }
@@ -236,13 +248,19 @@ The script provides real-time progress updates:
 
 ### Measured Performance Metrics
 
-Based on actual test runs on **Google Colab** with default configuration (3 parallel threads):
+Based on actual test runs on **Google Colab** with default configuration (2 parallel threads) for processing papers **2305.8001 to 2305.9000**:
 
-- **Average processing time**: ~17 seconds per paper
-- **Success rate**: 99.92% (both phases combined)
+- **Number of papers processed**: 1000
+- **Total Time**: ~2.388 hours
+- **Average processing time**: ~8.6 seconds per paper
+- **Success rate**: 100% (both phases combined)
 - **Reference extraction failure rate**: 0%
-- **Average RAM usage**: ~196.79 MB
-- **Peak memory usage**: ~1538.71.94 MB
+- **No reference**: 21
+- **Peak RAM usage through *memory_profiler***: 129.84 MiB
+- **Peak RAM usage through *psutil***: ~7662.8.84 MB
+- **Average RAM usage through *psutil***: ~224.84 MB
+- **Peak disk usager**: ~1917.65 MB
+- **Disk usage**: 1911.37 MB ~ 1.9GB
 - **Disk usage per paper**: ~1.5-2.4 MB (after cleanup)
 
 > **Note**: These metrics were measured on Google Colab's free tier. Performance may vary on different platforms or configurations.
@@ -284,7 +302,7 @@ START_MONTH = "2023-05"
 START_ID = 2001
 END_MONTH = "2023-05"
 END_ID = 2010
-MAX_PARALLELS = 3
+MAX_PARALLELS = 2
 ```
 
 This processes papers `2305.02001` through `2305.02010`.
@@ -292,39 +310,13 @@ This processes papers `2305.02001` through `2305.02010`.
 ### Example 2: Multi-Month Range
 
 ```python
-START_MONTH = "2023-05"
-START_ID = 2001
-END_MONTH = "2023-06"
-END_ID = 100
-MAX_PARALLELS = 3
+START_MONTH = "2023-04"
+START_ID = 14998
+END_MONTH = "2023-05"
+END_ID = 6
+MAX_PARALLELS = 2
 ```
 
 This processes:
-- Papers from May 2023 starting at ID 2001 until the last valid ID
+- Papers from April 2023 starting at ID 14998 until the last valid ID
 - Papers from June 2023 from ID 1 to 100
-
-## Resource Requirements
-
-Based on actual measurements on **Google Colab** with default configuration (3 parallel threads):
-
-- **RAM**: 
-  - Baseline: ~0.8 GB
-  - Average during processing: ~196.79 MB
-  - Peak memory: ~123.39 MB (increment: ~12.19 MB from baseline)
-  - Very efficient memory usage, suitable for systems with limited RAM
-
-- **Disk**: 
-  - Each paper uses approximately 1.5-2.4 MB after cleanup
-  - Peak disk usage per paper: ~2.4 MB (before cleanup)
-  - Final disk usage per paper: ~1.5 MB (after removing non-LaTeX files)
-  - Total disk usage depends on number of papers processed
-
-- **Network**: Stable internet connection required
-
-- **Time**: 
-  - Total Time: ~7.94 hours
-  - Average: ~17 seconds per paper
-  - Varies with network speed and paper size
-  - Processing time includes download, extraction, and reference fetching
-
-> **Note**: These measurements were obtained from Google Colab's free tier. Actual resource usage may vary depending on your local system configuration, network conditions, and hardware specifications.
