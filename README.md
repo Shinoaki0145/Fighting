@@ -120,6 +120,24 @@ Running the notebook also writes three helper Python scripts into the current wo
 
 Note: Rerunning the notebook will overwrite these files (because `%%writefile` replaces the target file). They are provided so you can run or modify the pipeline outside the notebook if desired.
 
+### Saving outputs on Google Colab
+
+If you run the notebook on Google Colab and want to persist the generated output folder (`./23127238`) to your Google Drive (so it survives Colab disconnections), mount your Drive and copy the folder after the pipeline finishes. The notebook includes a helper cell that mounts Drive and copies the tree to `/content/drive/MyDrive/23127238`.
+
+Quick manual commands you can run in Colab (after `drive.mount('/content/drive')`):
+
+```bash
+
+# Create a zip and copy (faster for many small files):
+!zip -r 23127238.zip /content/23127238
+!cp 23127238.zip /content/drive/MyDrive/
+```
+
+Notes:
+- The helper cell in the notebook will attempt to merge/copy the output into `MyDrive/23127238`. Existing files with the same names may be overwritten.
+- Copying many small files can be slow on Colab; zipping then copying is often faster.
+- Make sure you have sufficient space in your Google Drive before copying.
+
 ## Scraping Rate and Rate Limiting
 
 ### arXiv Rate Limiting
@@ -271,16 +289,17 @@ The script provides real-time progress updates:
 Based on actual test runs on **Google Colab** with default configuration (2 parallel threads) for processing papers **2305.8001 to 2305.9500**:
 
 - **Number of papers processed**: 1500
-- **Total Time**: 4 hours 19 seconds
-- **Average processing time**: ~9.61 seconds per paper
+- **Total Time**: 2 hours 16 minutes 57 seconds
+- **Average processing time**: ~5.48 seconds per paper
 - **Success rate**: 100% (both phases combined)
 - **Reference extraction failure rate**: 0%
 - **No reference**: 39
-- **Peak RAM usage through *memory_profiler***: 123.84 MiB
-- **Peak RAM usage through *psutil***: 8158.54 MB
-- **Average RAM usage through *psutil***: ~207.05 MB
-- **Peak disk usager**: 2494.05 MB
-- **Disk usage**: 2422.14 MB ~ 2.4 GB
+- **Peak RAM usage through *memory_profiler***: 122.82 MiB
+- **RAM increment *memory_profiler***: 11.63 MiB
+- **Peak RAM usage through *psutil***: 8161.51 MB
+- **Average RAM usage through *psutil***: ~69.1 MB
+- **Peak disk usager**: 2432.3 MB ~ 2.4 GB
+- **Disk usage**: 2422.17 MB ~ 2.4 GB
 - **Disk usage per paper**: ~1.5-2.4 MB (after cleanup)
 
 > **Note**: These metrics were measured on Google Colab's free tier. Performance may vary on different platforms or configurations.
