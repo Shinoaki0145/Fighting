@@ -286,10 +286,13 @@ The script provides real-time progress updates:
 
 ### Measured Performance Metrics
 
-Based on actual test runs on **Google Colab** with default configuration (2 parallel threads) for processing papers **2305.8001 to 2305.9500**:
+Based on actual test runs on **Google Colab** with default configuration (2 parallel threads) for processing papers 
+
+**2305.8001 to 2305.9500**:
+Run at 18:50 on 15/11/2025 to 21:07 on 15/11/2025
 
 - **Number of papers processed**: 1500
-- **Total Time**: 2 hours 16 minutes 57 seconds
+- **Total Run Time**: 2 hours 16 minutes 57 seconds
 - **Average processing time**: ~5.48 seconds per paper
 - **Success rate**: 100% (both phases combined)
 - **Reference extraction failure rate**: 0%
