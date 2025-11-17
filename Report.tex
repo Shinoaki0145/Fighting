@@ -1,0 +1,407 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{sectsty}
+\usepackage{lmodern}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{makecell}
+\usepackage{float}
+\usepackage{indentfirst}
+\usepackage{tocloft} % gói hỗ trợ chỉnh mục lục
+\usepackage{algorithm} % pseudo-code
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{fancyvrb}
+\usepackage{pgfplots}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage[margin=1in]{geometry}
+\usepackage{csquotes}
+\MakeAutoQuote{“}{”}     % Dấu nháy đôi
+\MakeAutoQuote{‘}{’}     % Dấu nháy đơn
+
+\usepackage{polyglossia}
+\setmainlanguage{english}  % Ngôn ngữ chính
+\setotherlanguage{vietnamese}    % Ngôn ngữ phụ
+
+\renewcommand{\algorithmicif}{\textbf{IF}} % DEFINE PSEUDO-CODE
+\renewcommand{\algorithmicwhile}{\textbf{WHILE}}
+\renewcommand{\algorithmicfor}{\textbf{FOR EACH}}
+\renewcommand{\algorithmicfunction}{\textbf{FUNCTION}}
+\renewcommand{\algorithmicreturn}{\textbf{RETURN}}
+\renewcommand{\algorithmicend}{\textbf{END}}
+
+\setlength{\parindent}{2em}  % thụt đầu dòng 2 chữ
+\setlength{\parskip}{1em}    % cách dòng giữa các đoạn
+
+\begin{document}
+
+% ===== PAGE HEADER/FOOTER SETTINGS =====
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+
+% Header
+\lhead{\textit{Course milestone 1}}
+
+% Footer
+\renewcommand{\footrulewidth}{0.4pt} % thêm đường kẻ ngang
+\lfoot{University of Science}
+\cfoot{Faculty of Information Technology}
+\rfoot{Page \thepage}
+
+% ===== TITLE PAGE =====
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.4mm}}
+
+\centering
+\textsc{\LARGE VNUHCM - UNIVERSITY OF SCIENCE}\\[1cm]
+\textsc{\Large FACULTY OF INFORMATION TECHNOLOGY}\\[0.4cm]
+\textsc{CSC14003 -- Introduction to Data Science}\\[0.8cm]
+
+%\textit{Intro} - ghi in nghieng
+
+\vspace{0.5cm} % giảm khoảng trắng trước logo
+\includegraphics[width=0.35\textwidth]{logo_truong.jpg}\\[0.5cm] % logo to hơn và sát lên
+
+\HRule \\[0.4cm]
+{\huge \bfseries COURSE MILESTONE 1}\\[0.2cm]
+% {\huge \bfseries Rush Hour: Solve the Traffic Jam!}\\[0.4cm]
+\HRule \\[1.0cm] % giảm khoảng dưới tiêu đề
+
+\vspace{0.5cm}
+{\Large \textbf{CLASS 23KHDL02 - GROUP 4}}\\[0.5cm] % sát phần dưới hơn
+
+\vspace{0.5cm}
+\noindent
+\begin{tabular}{p{0.63\textwidth} p{0.48\textwidth}}
+\textbf{Students:} & \textbf{Lecturers:} \\[0.5cm]
+23127168 -- Cao Trần Bá Đạt & Mrs. Nguyễn Ngọc Thảo \\
+23127238 -- Trần Hoài Thiện Nhân & Mr. Huỳnh Lâm Hải Đăng \\
+23127516 -- Bùi Nam Việt & Mr. Nguyễn Thanh Tình \\
+\end{tabular}
+
+\vspace{2.0cm}
+November 15th, 2025
+% July 7th, 2025
+
+\end{titlepage}
+
+% ===== TABLE OF CONTENTS =====
+
+\renewcommand{\contentsname}{} % Xóa tên mặc định
+\begin{center}
+    \Large\textbf{Contents}
+\end{center}
+
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % thêm dấu ....
+
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+
+% ===== LIST OF FIGURES =====
+
+\renewcommand{\listfigurename}{} % Xóa tên mặc định
+\begin{center}
+    \Large\textbf{List of Figures}
+\end{center}
+
+\renewcommand{\cftfigleader}{\cftdotfill{\cftdotsep}} % thêm dấu ...
+\listoffigures
+
+\thispagestyle{empty}
+\newpage
+% ===== THANKS =====
+\title{Acknowledgment}
+\author{}
+\date{}
+\maketitle
+To complete this milestone, we would like to send my sincere and deepest thanks to the teachers who have wholeheartedly guided and imparted knowledge to me throughout the past time. First of all, we would like to thank the main lecturer, Ms. Nguyen Ngoc Thao and then the two instructors of the project, Mr. Huynh Lam Hai Dang and Mr. Nguyen Thanh Tinh guided us through the tools, direction, and methods to approach this milestone easily and in the right direction.
+
+
+This milestone has helped us learn and implement how to scrape websites through libraries and APIs as well as how to handle common problems when scraping. In addition, programming skills with interacting with multi-threaded systems and file processing have also been acquired through this milestone.
+\newpage
+% ===== SECTION 1 =====
+\section{Introduction}
+This report summarizes the execution of Milestone 1 for the "Introduction to Data Science" course, which aimed to apply data scraping knowledge to a practical project.
+
+The primary task was to build a scraper for the arXiv repository. As required, we performed the following tasks for an assigned range of paper IDs:
+\begin{itemize}
+    \item Collected all available versions of each paper.
+
+    \item Downloaded the full LaTeX (TeX) source files and removed image files to reduce storage.
+
+    \item Extracted metadata (title, authors, dates), BibTeX files, and crawled reference information.
+
+    \item Utilized suggested tools such as the arXiv API and the Semantic Scholar API for data collection.
+\end{itemize}
+This report details the implementation process, the tools used, and the performance evaluation of the scraper.
+
+\begin{center}
+    \href{https://www.youtube.com/watch?v=jVv241fCPLA\&feature=youtu.be}{\textbf{Group demo video link: \url{https://www.youtube.com/watch?v=jVv241fCPLA}}}
+\end{center}
+
+\newpage
+% ===== SECTION 2 =====
+\section{Implementation Process}
+\subsection{Libraries and tools}
+\begin{itemize}
+\item arxiv: library acts as a single bridge between your Python code and the arXiv server.
+\item request: library, use for calling the scholar semantic API
+\item Semantic Scholar: acts as a knowledge database to search for references.
+\item os: library, used to create folder.
+\item re: the library, used for extracting text and file names.
+\item json: library, used for reading and writing json files.
+\item time: library, use for sleeping.
+\item shutil: module, used for performing operations on files and directories.
+\item tarfile: library, use to handle .tar .gz.
+\item subprocess: library, used to run external command. Use subprocess.run to call the system file command, to "check" the downloaded file
+\item gzip: module, used to unzip the folder.
+\item ThreadPoolExecute, as\_complete: class and function, used to split into multiple parallel streams.
+\item Lock: class, used to ensure safety when running multithreaded.
+\item psutil: library, used to measure system resources.
+\item memory\_profiler: library, used to measure memory.
+\item sys: library, used to interact with the system.
+
+\end{itemize}
+
+\subsection{Download source files for paper's version and metadata}
+- To access the paper we use the arxiv library by initializing a client to communicate with the arXiv server API.
+
+- Search for pages by their id using the arxiv library commands and get an object containing the article's metadata.
+
+- From this object you can call its fields such as title, author, submission date, publication venue through fields of the object
+
+- The key point here is that when searching by just the article id, calling the entry\_id field of the article object will return the article id but with the latest version name at the end. So we will use regex to find the latest version name from here.
+
+- We will use a loop to iterate from version 1 to the latest version by accessing each version to get the object as above.
+
+- By this loop we will get the releases of each version and the sources for each version through the fields of the object.
+
+\subsection{Extract and delete}
+\subsubsection{Detect and fix file type}
+Execute the run function file with the downloaded source file to capture the string that the file command prints out to see what the nature of that file is.
+\begin{itemize}
+    \item If this run results in a \textbf{\enquote{PDF document}}, then it is a PDF.
+    \item If this result is \textbf{\enquote{gzip compressed data}} then it is likely that the author only has a single .tex file and performs a regex search for the file name. If it is found, it will return the file type gz and the file name tex. If not, it will return the file type \textbf{.tar .gz.}
+    \item If this results in \textbf{\enquote{tar archive}} then this is a standard .tar .gz archive so it will return tar .gz.
+    \item The remaining results will return the file type as unknown.
+\end{itemize}
+\subsubsection{Extract and clean}
+Perform the call to the "detect and fix file style" function as mentioned above to get the file type.
+\begin{itemize}
+    \item If it is \textbf{\enquote{pdf}}, it reports success and stops immediately (because there is nothing to extract).
+    \item If it is \textbf{\enquote{unknown}}, it reports failure and stops.
+    \item For tar .gz files use \enquote{tarfile.open} and \enquote{tar.extractall} functions to extract all files into a subdirectories 
+    \item For gz files use the \textbf{\enquote{gzip.open}} function to unzip that single file into a subdirectory
+\end{itemize}
+
+After decompressing in the above step, the function continues to clean up unnecessary files.
+\begin{itemize}
+    \item Directory Scan: It uses os.walk to walk through all the files just extracted in the subdirectories.
+    \item It checks whether the file name (in lowercase) ends with .tex or .bib.
+    \item If the file is not \textbf{.tex} or \textbf{.bib} (e.g. .jpg, .png, .sty, .log, .pdf included...), it will be considered a "trash" file and deleted with os.remove.
+    \item Counts the number of deleted files and saves it to the deleted variable.
+\end{itemize}
+
+After executing this function, the source file folder that was originally downloaded will be deleted.
+\subsection{Scraping references}
+- Use the url containing the path of the instructor's provided scholar semantic API and put the id of the article at the end. We also use the S2 API Key:
+
+\textbf{cf6G5yldwF4UEzswq3WKX72B6uffqNv17LQDo8Oi} which we obtained from Semantic Scholar at 2:40 PM on November 14, 2025 and 
+
+\textbf{a8okwqTLp18Ku1vBXJ1Jb6eRoDKpmAem41VjtFCY} which we obtained from Semantic Scholar at 2:11 PM on November 14, 2025.
+
+- Use request to make an API call with the following params in code to get the citations of the article.
+
+- There will be cases where the API will give error 429, this error is quite common so the id will be queued for later execution.
+
+- Get the list of citations and filter out the citations that are only in ArXiv.
+
+- We will iterate through the list of references and then use the \textbf{\enquote{get}} function to get the references that are external and only on the arxiv page.
+
+- From the filtered references, perform the get function to get the required information such as id, paper title, authors, submission date, semantic scholar id.
+
+- Save the results of an article into a dictionary and write it to a json file.
+
+\subsection{Method of handling last id of month}
+When we start running the first id of the first month we will use a regular step like this: 
+\begin{itemize}
+    \item \textbf{Step 1}: Get the first id of the month that is starting and add it to 50, then directly access the article page corresponding to the id that has just been added via the http link. If the result still exists, continue adding 50 and repeat step 1. Otherwise, go to step 2.
+    \item \textbf{Step 2}: Take the id of the previous step to subtract 10 and then check if the article exists like the step above. If the article does not exist, repeat step 2. If the id exists, go to step 3.
+    \item \textbf{Step 3}: Similar to step 1 but this time add 5.
+    \item \textbf{Step 4}: Similar to step 2 but this time minus 1.
+\end{itemize}
+After running the above loop, we will find the exact last id of the month.
+
+\subsection{Pipeline}
+
+- Initially we will create from input input is month and id as standard id.
+
+- If the input has 2 different months, handle as in 2.5.
+
+- With an input range of 2 months, we will divide it into 2 runs: once in the first month and once in the last month.
+
+For each article id:
+\begin{itemize}
+    \item Search for articles through the arxiv library and get the sources and metadata. One thing to note in this step is that when getting the source of an article, we will immediately unzip and delete unnecessary files, instead of having to download the entire article and then unzip and delete.
+    \item Make a call to the Semantic Scholar API to get the references.
+\end{itemize}
+
+
+\textbf{Notice: When executing the .ipynb file, it will create 3 .py files to run the program on these 3 files.} 
+
+
+\section{Summary}
+We have successfully collected all 15000 articles and the statistics below are from 10\% of the articles corresponding to 1500 articles.
+
+The data collection run was exceptionally successful. A total of 1500 papers were processed with a 100\% success rate for both arXiv source crawling and Semantic Scholar reference extraction.\
+The scraper demonstrates remarkable efficiency, processing the entire 1500 paper workload in more 2 hours. The most impressive finding is the resource footprint: with a peak RAM usage of only 122.82 MiB (measure by memory profiler), the script proves to be extremely lightweight and scalable. The final 2.36 GB dataset is clean and robust, validating the project's data collection methodology.
+
+\subsection{Photo evidence}
+
+\label{Evidence}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{evidence_1.jpg}
+    \caption{Start run evidence}
+    \label{fig:Start run evidence}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{evidence_ 2.jpg}
+    \caption{End run evidence}
+    \label{fig:End run evidence}
+\end{figure}
+
+\subsection{Relevant Statistics}
+
+This section outlines the key metrics related to the data collection process from arXiv and Semantic Scholar.
+
+
+\begin{itemize}
+\item \textbf{Number of Papers Scraped Successfully:} \texttt{1500}
+\item \textbf{Range ID:} \texttt{2305.08001 - 2305.09500}
+\item \textbf{Time: } \texttt{18:50 on 15/11/2025 to 21:07 on 15/11/2025}
+\item \textbf{Overall Success Rate:} \texttt{100\%}
+\item \textbf{Average Paper Size (Before Cleaning):} \texttt{2.4 MB}
+\item \textbf{Average Paper Size (After Cleaning):} \texttt{1.5 MB}
+\item \textbf{No references:} \texttt{39}
+\item \textbf{No reference rate:} \texttt{2.6\%}
+\item \textbf{Reference Metadata Scrape Success Rate:} \texttt{100\%}
+\end{itemize}
+
+% \vspace{2cm}
+\textbf{Statistical Analysis and Commentary:}
+
+The 100\% success rates for both the main scraper and the reference extractor are outstanding. This indicates that the error handling, request logic (including requests with a User-Agent), and API key integration (for Semantic Scholar) are robust.
+
+The reason why no reference was found can be explained by the fact that when calling the Semantic Scholar API for the corresponding ID, it returns a 404 that the reference of the article was not found or that the article has no references.
+
+Furthermore, the data cleaning step is highly effective. The reduction in average paper size from 2.4 MB to 1.5 MB represents a 37.5\% reduction in storage. This cleaning process (removing non-essential image/style files) significantly optimizes the final dataset.
+
+
+\subsubsection{Running Time}
+\begin{itemize}
+\item \textbf{Total Processing Time (1500 Papers):} \texttt{2 hours, 16 minutes, 57 seconds}
+\item \textbf{Average Time per Paper:} \texttt{5.48 seconds}
+\end{itemize}
+
+
+% \subsubsection{Running Time Analysis and Commentary}
+% The scraper exhibits excellent throughput. Processing 15{,}000 papers in just under 8 hours results in an effective processing rate of approximately 0.52 papers per second, or 31.4 papers per minute.
+
+
+% The most critical insight comes from comparing the total time with the average time:
+
+
+% \begin{itemize}
+% \item \textbf{Total Work Done (Single-threaded):} 15{,}00 papers $\times$ 9.61 sec/paper = 255{,}000 seconds
+% \item \textbf{Actual Wall Clock Time (Parallel):} 7h 56m 24s = 28{,}584 seconds
+% \end{itemize}
+
+
+% This reveals an effective parallelization factor of 8.92x. This is a strong result for a 3-thread configuration, demonstrating that the process is heavily I/O bound and parallel execution successfully reduces idle time.
+
+
+\subsubsection{Memory Footprint}
+\begin{itemize}
+\item Measure by memory profiler (measure ram when running main function) 
+\begin{itemize}
+    \item \textbf{Maximum RAM Used:} \texttt{122.82 MiB}
+    \item \textbf{Average RAM Used:} \texttt{11.63 MiB}
+\end{itemize}
+
+\item Measure overall system Ram of google colab
+\begin{itemize}
+    \item \textbf{Maximum RAM Used:} \texttt{8161.51 MB}
+    \item \textbf{Average RAM Used:} \texttt{69.10 MB}
+\end{itemize}
+
+\item Measure memory disk
+\begin{itemize}
+    \item \textbf{Peak disk:} \texttt{2432.30 MB} $\approx$ 2.37 GB
+    \item \textbf{Final Output Storage Size:} \texttt{2422.17 MB $\approx$ 2.36 GB}
+\end{itemize}
+
+\end{itemize}
+
+
+% \subsubsection{Memory and Storage Analysis}
+% The memory footprint is the most notable statistic. A peak RAM usage of only 126 MB for a high-throughput, multi-threaded I/O task is exceptionally low. This confirms the script is highly memory-efficient, leak-free, and scalable.
+
+
+% The storage analysis is also positive:
+
+
+% \begin{itemize}
+% \item \textbf{Final Storage:} The 35.5 GB output corresponds to 2.36 MB per paper on average, consistent with earlier test data.
+% \item \textbf{Peak Storage:} The estimated 56.8 GB accounts for temporary downloaded files prior to cleaning, matching the expected peak-to-final ratio of 1.6x.
+% \end{itemize}
+
+\section{References}
+\begingroup
+    \renewcommand{\section}[2]{}
+    
+    \begin{thebibliography}{99}
+    \addcontentsline{toc}{section}{Tài liệu tham khảo}
+    
+    \bibitem{s2api}
+    Semantic Scholar,
+    ``Semantic Scholar Academic Graph API'',
+    \url{https://www.semanticscholar.org/product/api}
+    
+    \bibitem{s2tutorial}
+    Semantic Scholar,
+    ``API Tutorial — Semantic Scholar API'',
+    \url{https://www.semanticscholar.org/product/api/tutorial}
+    
+    \bibitem{s2graphdocs}
+    Semantic Scholar,
+    ``Graph API Documentation'',
+    \url{https://api.semanticscholar.org/api-docs/graph}
+    
+    \bibitem{arxivapi}
+    arXiv,
+    ``arXiv API User's Manual'',
+    \url{https://info.arxiv.org/help/api/user-manual.html}
+    
+    \bibitem{arxivoa}
+    arXiv,
+    ``arXiv Open Access and API'',
+    \url{https://info.arxiv.org/help/oa/index.html}
+    
+    \end{thebibliography}
+\endgroup
+\end{document}
